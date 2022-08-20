@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 
 # Installing Chrome Headless
 RUN apt update
-RUN apt install -y libappindicator1 fonts-liberation curl wget \
+RUN apt install -y libappindicator1 fonts-liberation curl wget git \
     fonts-liberation \
     libasound2 \
     libatk-bridge2.0-0 \
