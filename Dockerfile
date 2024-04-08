@@ -32,7 +32,9 @@ RUN dpkg -i google-chrome-stable_current_amd64.deb
 # Installing NodeJs
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt install nodejs
+RUN npm install -g yarn
 
 # Installing Angular
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@14.1.2
+
 RUN ng config -g cli.packageManager yarn
