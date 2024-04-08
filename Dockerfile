@@ -13,7 +13,6 @@ RUN apt install -y libappindicator1 fonts-liberation curl wget git \
     libdbus-1-3 \
     libdrm2 \
     libgbm1 \
-    # libgtk-3-0 \
     libgtk-4-1 \
     libnspr4 \
     libnss3 \
@@ -35,6 +34,6 @@ RUN apt install nodejs
 RUN npm install -g yarn
 
 # Installing Angular
-RUN npm install -g @angular/cli@14.1.2
+RUN npm install -g @angular/cli@14.2.0-next.1
 
 RUN ng config -g cli.packageManager yarn
