@@ -80,3 +80,4 @@ gh release create $1 --generate-notes --latest
 
 git checkout main
 git branch -D $1
+git pull
