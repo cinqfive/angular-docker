@@ -1,0 +1,75 @@
+#!/bin/sh
+
+if [ "$#" -lt 1 ]; then
+    echo "Usage: new [ng version] [node-version]"
+    echo "\tng version is mandatory"
+    echo "\tnode version is optional and will fall back to 16.x"
+    exit 1
+fi
+
+ng_version=$(echo $1 | sed 's/^v//g')
+node_version=$2
+
+echo "Processing angular@$ng_version"
+
+if [ -z "$node_version" ]; then
+    node_version="16.x"
+    echo "Node version not specified. Will fallback to 16.x"
+fi
+echo "Processing node@$node_version"
+
+git checkout -b $1
+sed -i s/setup_.*$/setup_"$node_version"" "\|" "bash" "-/g Dockerfile
+if [ $? != 0 ]; then
+    exit_code=$?
+    echo "Cannot set node version in Docker file"
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+
+sed -i "s/@angular\/cli@\(.\+\)/@angular\/cli@$ng_version/g" Dockerfile
+if [ $? != 0 ]; then
+    exit_code=$?
+    echo "Cannot set angular version in Docker file"
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+
+docker build -t cinqfive/angular:$ng_version .
+if [ $? != 0 ]; then
+    exit_code=$?
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+
+docker build -t cinqfive/angular:latest .
+if [ $? != 0 ]; then
+    exit_code=$?
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+
+docker push cinqfive/angular:$ng_version
+if [ $? != 0 ]; then
+    exit_code=$?
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+
+docker push cinqfive/angular:latest
+if [ $? != 0 ]; then
+    exit_code=$?
+    git checkout main
+    git branch -D $1
+    exit $exit_code
+fi
+git add Dockerfile
+git commit -m "$ng_version"
+git push --set-upstream origin $1
+git checkout main
+git branch -D $1
