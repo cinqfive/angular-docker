@@ -70,7 +70,13 @@ if [ $? != 0 ]; then
     exit $exit_code
 fi
 git add Dockerfile
-git commit -m "$ng_version"
+git commit -m "$1"
 git push --set-upstream origin $1
+
+gh pr create --title "$1" --assignee @me --fill
+gh pr merge $1 --delete-branch
+
+gh release create $1 --generate-notes --latest
+
 git checkout main
 git branch -D $1

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cat releases | while read release
+do
+    ./new $release
+done
