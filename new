@@ -18,6 +18,7 @@ if [ -z "$node_version" ]; then
 fi
 echo "Processing node@$node_version"
 
+git pull
 git checkout -b $1
 sed -i s/setup_.*$/setup_"$node_version"" "\|" "bash" "-/g Dockerfile
 if [ $? != 0 ]; then
