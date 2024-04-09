@@ -35,6 +35,6 @@ RUN apt install nodejs
 RUN npm install -g yarn
 
 # Installing Angular
-RUN npm install -g @angular/cli@15.0.0-rc.2
+RUN npm install -g @angular/cli@14.2.10
 
 RUN ng config -g cli.packageManager yarn
