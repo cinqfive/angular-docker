@@ -74,7 +74,7 @@ git commit -m "$1"
 git push --set-upstream origin $1
 
 gh pr create --title "$1" --assignee @me --fill
-gh pr merge --delete-branch --admin
+gh pr merge --delete-branch --admin --merge
 
 gh release create $1 --generate-notes --latest
 
