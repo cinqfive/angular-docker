@@ -2,5 +2,5 @@
 
 cat releases | while read release
 do
-    ./new $release
+    echo $release | xargs ./new
 done
