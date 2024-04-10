@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#############################################################################
+#                              Arguments
+#############################################################################
 if [ "$#" -lt 1 ]; then
     echo "Usage: new [ng version] [node-version]"
     echo "\tng version is mandatory"
@@ -7,6 +10,9 @@ if [ "$#" -lt 1 ]; then
     exit 1
 fi
 
+#############################################################################
+#                              Versions
+#############################################################################
 ng_version=$(echo $1 | sed 's/^v//g')
 node_version=$2
 
@@ -18,6 +24,9 @@ if [ -z "$node_version" ]; then
 fi
 echo "Processing node@$node_version"
 
+#############################################################################
+#                              Sed'ing
+#############################################################################
 git pull
 git checkout -b $1
 sed -i s/setup_.*$/setup_"$node_version"" "\|" "bash" "-/g Dockerfile
@@ -38,6 +47,9 @@ if [ $? != 0 ]; then
     exit $exit_code
 fi
 
+#############################################################################
+#                              Docker
+#############################################################################
 docker build -t cinqfive/angular:$ng_version .
 if [ $? != 0 ]; then
     exit_code=$?
@@ -69,15 +81,47 @@ if [ $? != 0 ]; then
     git branch -D $1
     exit $exit_code
 fi
+
+#############################################################################
+#                              Commit and push
+#############################################################################
 git add Dockerfile
 git commit -m "$1"
-git push --set-upstream origin $1
+if [ $? != 0 ]; then
+    exit_code=$?
+    exit $exit_code
+fi
 
+git push --set-upstream origin $1
+if [ $? != 0 ]; then
+    exit_code=$?
+    exit $exit_code
+fi
+
+#############################################################################
+#                           Github PR and release
+#############################################################################
 gh pr create --title "$1" --assignee @me --fill
+if [ $? != 0 ]; then
+    exit_code=$?
+    exit $exit_code
+fi
+
 gh pr merge --delete-branch --admin --merge
+if [ $? != 0 ]; then
+    exit_code=$?
+    exit $exit_code
+fi
 
 gh release create $1 --generate-notes --latest
+if [ $? != 0 ]; then
+    exit_code=$?
+    exit $exit_code
+fi
 
+#############################################################################
+#                              Cleanup
+#############################################################################
 git checkout main
 git branch -D $1
 git pull
