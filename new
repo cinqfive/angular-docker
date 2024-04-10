@@ -6,7 +6,7 @@
 if [ "$#" -lt 1 ]; then
     echo "Usage: new [ng version] [node-version]"
     echo "\tng version is mandatory"
-    echo "\tnode version is optional and will fall back to 16.x"
+    echo "\tnode version is optional and will fall back to 20.x"
     exit 1
 fi
 
@@ -19,8 +19,8 @@ node_version=$2
 echo "Processing angular@$ng_version"
 
 if [ -z "$node_version" ]; then
-    node_version="16.x"
-    echo "Node version not specified. Will fallback to 16.x"
+    node_version="20.x"
+    echo "Node version not specified. Will fallback to 20.x"
 fi
 echo "Processing node@$node_version"
 
